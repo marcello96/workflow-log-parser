@@ -146,10 +146,13 @@ def save_log_list(logs, dest_file):
 
 
 def extract_job_info(filename):
-    matches = re.match(r'.*task-([A-Za-z0-9\-]+)__(\d+)__(\d+)__\d+\.log', filename)
-    hf_id = matches.group(1)
-    app_id = matches.group(2)
-    proc_id = matches.group(3)
+    matches = re.match(r'.*task-([A-Za-z0-9\-_]+)__(\d+)__(\d+)__\d+\.log', filename)
+    if matches:
+        hf_id = matches.group(1)
+        app_id = matches.group(2)
+        proc_id = matches.group(3)
+    else:
+        print("Did not match .log file.")
 
     return {"hyperflowId": hf_id, "workflowId": "{}-{}".format(hf_id, app_id),
             "jobId": "{}-{}-{}".format(hf_id, app_id, proc_id)}
@@ -177,8 +180,6 @@ def extend_with_sizes(files_list, file_name_size_map):
     result = []
     for entry_map in files_list:
         name = entry_map['name']
-        if name == 'Gmax_275_v2.0.fa.sa':
-            print(name)
         result.append({'name': name, 'size': file_name_size_map[name]})
 
     return result
